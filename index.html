@@ -1,0 +1,108 @@
+07.16 1:18 PM
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>Amitabh Style Timer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      padding-top: 80px;
+    }
+    #timer {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 5px;
+      border: none;
+      border-radius: 10px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    input[type="number"] {
+      width: 100px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Amitabh Style Timer</h1>
+
+  <div>
+    <label for="timeInput">Set Timer (seconds): </label>
+    <input type="number" id="timeInput" value="10" min="1">
+  </div>
+
+  <div id="timer">00:10</div>
+
+  <div>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="stopTimer()">Stop</button>
+  </div>
+
+  <!-- Tik Tik Sound -->
+  <audio id="tickSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
+  <script>
+    let interval;
+    let remainingTime = 0;
+
+    function speak(text) {
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = "hi-IN";
+      msg.pitch = 0.8;
+      msg.rate = 0.9;
+      speechSynthesis.speak(msg);
+    }
+
+    function playTick() {
+      const tick = document.getElementById("tickSound");
+      tick.currentTime = 0;
+      tick.play();
+    }
+
+    function startTimer() {
+      stopTimer(); // Clear existing timer if any
+
+      const inputSeconds = parseInt(document.getElementById("timeInput").value);
+      if (isNaN(inputSeconds) || inputSeconds <= 0) return;
+
+      remainingTime = inputSeconds;
+      updateDisplay(remainingTime);
+      speak("Aapka samay shuru hua");
+
+      interval = setInterval(() => {
+        playTick(); // Play tik tik sound
+        remainingTime--;
+        updateDisplay(remainingTime);
+
+        if (remainingTime <= 0) {
+          stopTimer();
+          speak("Aapka samay samapt hua");
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(interval);
+    }
+
+    function updateDisplay(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
+      document.getElementById("timer").textContent = `${m}:${s}`;
+    }
+  </script>
+
+</body>
+</html>
